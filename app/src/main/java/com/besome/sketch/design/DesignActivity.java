@@ -518,6 +518,15 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             toViewCodeEditor();
             return true;
         });
+        bottomMenu.add(Menu.NONE, 8, Menu.NONE, "AI Assist").setOnMenuItemClickListener(item -> {
+            if (projectFile == null) return true;
+            Intent intent = new Intent(this, AiAssistActivity.class);
+            intent.putExtra(AiAssistActivity.EXTRA_SCREEN_NAME, projectFile.getJavaName());
+            intent.putExtra(AiAssistActivity.EXTRA_XML_NAME, projectFile.getXmlName());
+            intent.putExtra(AiAssistActivity.EXTRA_SC_ID, sc_id);
+            startActivity(intent);
+            return true;
+        });
         bottomPopupMenu.setOnDismissListener(menu -> btnOptions.setChecked(false));
 
         xmlLayoutOrientation = findViewById(R.id.img_orientation);
@@ -545,12 +554,14 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                 }
                 if (position == 0) {
                     bottomMenu.findItem(7).setVisible(true);
+                    bottomMenu.findItem(8).setVisible(true);
                     if (viewTabAdapter != null) {
                         viewTabAdapter.showHidePropertyView(true);
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_screen);
                     }
                 } else if (position == 1) {
                     bottomMenu.findItem(7).setVisible(false);
+                    bottomMenu.findItem(8).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);
@@ -560,6 +571,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                     }
                 } else {
                     bottomMenu.findItem(7).setVisible(false);
+                    bottomMenu.findItem(8).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);

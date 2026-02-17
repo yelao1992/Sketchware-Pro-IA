@@ -85,6 +85,10 @@
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.SketchwarePro.SmallToolbar" />
         <activity
+            android:name="com.besome.sketch.design.AiAssistActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.SketchwarePro.SmallToolbar" />
+        <activity
             android:name="pro.sketchware.activities.main.activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
