@@ -518,6 +518,14 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             toViewCodeEditor();
             return true;
         });
+        bottomMenu.add(Menu.NONE, 8, Menu.NONE, "AI Assist").setOnMenuItemClickListener(item -> {
+            if (projectFile == null) return true;
+            String filename = Helper.getText(fileName);
+            launchActivity(AiAssistActivity.class, null,
+                    new Pair<>("current_xml", filename),
+                    new Pair<>("screen_name", projectFile.getJavaName()));
+            return true;
+        });
         bottomPopupMenu.setOnDismissListener(menu -> btnOptions.setChecked(false));
 
         xmlLayoutOrientation = findViewById(R.id.img_orientation);
@@ -545,12 +553,14 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                 }
                 if (position == 0) {
                     bottomMenu.findItem(7).setVisible(true);
+                    bottomMenu.findItem(8).setVisible(true);
                     if (viewTabAdapter != null) {
                         viewTabAdapter.showHidePropertyView(true);
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_screen);
                     }
                 } else if (position == 1) {
                     bottomMenu.findItem(7).setVisible(false);
+                    bottomMenu.findItem(8).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);
@@ -560,6 +570,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                     }
                 } else {
                     bottomMenu.findItem(7).setVisible(false);
+                    bottomMenu.findItem(8).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);
