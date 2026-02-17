@@ -1,4 +1,4 @@
-yes: Build APK (Debug)
+name: Build APK (Debug)
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
             exit 1
           fi
 
-          
+          # Accept licenses (avoid failing due to 'yes' SIGPIPE under pipefail)
           set +o pipefail
           yes | "$SDKMANAGER" --licenses --sdk_root="$SDKROOT"
           set -o pipefail
@@ -55,7 +55,7 @@ jobs:
           "$SDKMANAGER" --sdk_root="$SDKROOT" "build-tools;36.0.0" || "$SDKMANAGER" --sdk_root="$SDKROOT" "build-tools;35.0.0"
 
       - name: Grant execute permission for Gradle wrapper
-        run: cchmod+x ./gradlew
+        run: chmod +x ./gradlew
 
       - name: Build Debug APK
         run: ./gradlew :app:assembleDebug --stacktrace --info
