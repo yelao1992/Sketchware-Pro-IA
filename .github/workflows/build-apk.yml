@@ -1,0 +1,63 @@
+name: Build APK (Debug)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept licenses + install SDK packages (compileSdk 36)
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          SDKROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+          if [ -z "$SDKROOT" ]; then
+            echo "ANDROID_SDK_ROOT/ANDROID_HOME not set"
+            exit 1
+          fi
+
+          SDKMANAGER="$SDKROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(command -v sdkmanager || true)"
+          fi
+          if [ -z "$SDKMANAGER" ] || [ ! -x "$SDKMANAGER" ]; then
+            echo "sdkmanager not found. SDKROOT=$SDKROOT"
+            ls -la "$SDKROOT" || true
+            exit 1
+          fi
+
+          yes | "$SDKMANAGER" --licenses --sdk_root="$SDKROOT"
+          "$SDKMANAGER" --sdk_root="$SDKROOT" "platform-tools" "platforms;android-36"
+          "$SDKMANAGER" --sdk_root="$SDKROOT" "build-tools;36.0.0" || "$SDKMANAGER" --sdk_root="$SDKROOT" "build-tools;35.0.0"
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug --stacktrace --info
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sketchwarepro-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
