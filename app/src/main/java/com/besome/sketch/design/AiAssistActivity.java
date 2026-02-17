@@ -17,7 +17,7 @@ public class AiAssistActivity extends BaseAppCompatActivity {
     public static final String EXTRA_SC_ID = "sc_id";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ai_assist_activity);
         setTitle("AI Assist");
